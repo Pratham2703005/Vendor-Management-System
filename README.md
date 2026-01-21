@@ -45,7 +45,7 @@ Follow these steps to set up the project locally:
 
 1.  **Clone the Repository**
     ```bash
-    git clone https://github.com/Pratham2703005/Professional-Vendor-Management-System.git
+    git clone https://github.com/Pratham2703005/Vendor-Management-System.git
     ```
 
 2.  **Install Dependencies**
