@@ -2,6 +2,8 @@
 
 This Assignment is a professional Vendor Management System designed to facilitate efficient document submission and approval workflows. It serves as a centralized platform connecting Writers and Managers, ensuring a streamlined process for content review. The application is built with a focus on performance, security, and a premium user experience.
 
+Live Link: [aura-vms-assign.vercel.app](https://aura-vms-assign.vercel.app/)
+
 ## Application Walkthrough
 
 ### 1. Login Page
@@ -43,8 +45,7 @@ Follow these steps to set up the project locally:
 
 1.  **Clone the Repository**
     ```bash
-    git clone <repository-url>
-    cd aura_vms
+    git clone https://github.com/Pratham2703005/Professional-Vendor-Management-System.git
     ```
 
 2.  **Install Dependencies**
@@ -56,8 +57,10 @@ Follow these steps to set up the project locally:
     Create a `.env.local` file in the root directory to configure local settings (such as email credentials).
     ```env
     # Example configuration
-    EMAIL_USER=your-email@example.com
-    EMAIL_PASS=your-app-password
+    SMTP_USER=sample@gmail.com
+    SMTP_PASS=sample
+    MANAGER_EMAIL=sample@gmail.com
+    SITE_URL=http://localhost:3000
     ```
 
 4.  **Run the Development Server**
