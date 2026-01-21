@@ -1,47 +1,71 @@
-# Aura VMS
+# Aura VMS SDE Internship Assignment
 
-A tiny, premium-designed service for writers to submit documents for manager approval. Built with Next.js 16, TypeScript, and SQLite.
+This Assignment is a professional Vendor Management System designed to facilitate efficient document submission and approval workflows. It serves as a centralized platform connecting Writers and Managers, ensuring a streamlined process for content review. The application is built with a focus on performance, security, and a premium user experience.
 
-## Features
-*   **Document Parsing**: Automatically extracts Title, Content, and Image References from `.docx`, `.md`, and `.txt` files.
-*   **Role-Based Access**: Specialized dashboards for `writer` (Upload/Preview) and `manager` (Approve/Reject).
-*   **Email Workflow**: Automated email notifications with actionable "Approve/Reject" links (Mocked/Logged if SMTP not configured).
-*   **Premium UI**: Glassmorphism aesthetic, dark mode, and responsive design using Tailwind CSS v4.
+## Application Walkthrough
 
-## Setup Instructions
+### 1. Login Page
+The application features a secure entry point with role-based access control. Users identify as either a `writer` or `manager` to access their dedicated workspaces.
+![Login Page](./public/screenshots/1_login.png)
 
-1.  **Install Dependencies**:
+### 2. Writer Workspace
+Upon successful authentication, Writers are presented with a focused dashboard designed for productivity. The interface is clean and optimized for initiating new submissions.
+![Writer Dashboard](./public/screenshots/2_writer_dash.png)
+
+### 3. Document Upload & Preview
+Writers can upload documents (supporting .docx, .md, .txt). The system parses the content and generates an immediate preview, allowing for verification before final submission.
+![Preview](./public/screenshots/3_writer_preview.png)
+
+### 4. Submission Status
+Once a document is submitted, its status is tracked in real-time. Writers can verify that their work is "Pending" review directly from their dashboard.
+![Submitted](./public/screenshots/4_writer_submitted.png)
+
+### 5. Manager Notification
+Managers receive automated email notifications containing the full submission details. These emails include direct action buttons to "Approve" or "Reject" the submission without needing to navigate back to the dashboard.
+![Manager Email](./public/screenshots/5_manager_email.png)
+
+### 6. Manager Dashboard
+*Feature currently in development.* Future updates will include a dedicated Manager Dashboard to view historical data, track approved/rejected requests, and manage remaining queue items.
+![Manager Dashboard](./public/screenshots/6_manager_dash.png)
+
+## Tests
+
+To ensure system reliability and code quality, the project includes a comprehensive test suite using Jest. These tests validate core functionalities including document parsing, database operations, and API endpoints.
+
+To run the tests:
+```bash
+npm test
+```
+
+## Installation & Setup
+
+Follow these steps to set up the project locally:
+
+1.  **Clone the Repository**
+    ```bash
+    git clone <repository-url>
+    cd aura_vms
+    ```
+
+2.  **Install Dependencies**
     ```bash
     npm install
     ```
 
-2.  **Run the Server**:
+3.  **Configure Environment Variables**
+    Create a `.env.local` file in the root directory to configure local settings (such as email credentials).
+    ```env
+    # Example configuration
+    EMAIL_USER=your-email@example.com
+    EMAIL_PASS=your-app-password
+    ```
+
+4.  **Run the Development Server**
+    Start the application in development mode:
     ```bash
     npm run dev
     ```
+    The application will be accessible at `http://localhost:3000`.
 
-3.  **Access the App**:
-    Open [http://localhost:3000](http://localhost:3000)
-
-4.  **Login**:
-    *   **Writer**: Use ID `writer`
-    *   **Manager**: Use ID `manager`
-
-## Development
-*   **Run Tests**: `npm test`
-*   **Database**: Uses `better-sqlite3`. Database file `aura.db` is created automatically in the root.
-
-## Architecture Decisions
-*   **Unified Next.js App**: Used App Router for both UI and API to keep the deployment simple and "tiny".
-*   **SQLite**: Chosen for the simpler "No heavy database" requirement while providing standard SQL benefits (types, constraints) over a raw JSON file.
-*   **Hexagonal-style Logic**: Core logic (Parsing, Emailing, DB access) is separated in `lib/` to allow for easy unit testing and separation of concerns.
-
-## Future Constraints / Improvements
-*   **Authentication**: Currently uses a simple cookie-based role check. Real production apps should use Auth.js or similar.
-*   **Image Handling**: Currently extracts image references/links. For a real production app, I would implement full image extraction to cloud storage (e.g., S3/Uploadthing).
-*   **Error Handling**: Basic toasts and alerts are implemented; a global error boundary would be better.
-
-## Project Structure
-*   `app/`: Routes and Pages (Login, Dashboard, API)
-*   `lib/`: Core Logic (DB, Parser, Email)
-*   `__tests__/`: Unit Tests
+---
+Thanks for reading, hope you like it!
