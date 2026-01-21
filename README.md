@@ -4,6 +4,27 @@ This Assignment is a professional Vendor Management System designed to facilitat
 
 Live Link: [aura-vms-assign.vercel.app](https://aura-vms-assign.vercel.app/)
 
+## Features
+*   **Role-Based Access**: Dedicated dashboards for Writers and Managers.
+*   **Smart Document Parsing**: Extract text and links from `.docx`, `.md`, and `.txt` files.
+*   **Automated Workflow**: status tracking and email notifications for approvals.
+
+## Credentials for Testing
+To test the application, use the following Access IDs at the login screen:
+*   **Writer**: `writer` (Can upload and view own submissions)
+*   **Manager**: `manager` (Can approve or reject submissions)
+
+## Key Focus Areas
+During development, I specifically focused on:
+*   **Robust Parsing Logic**: Building a reliable system to parse diverse document formats (Text, Links, and basic Image references) into a unified structure.
+*   **User Experience**: Ensuring the parsing happens instantly and provides immediate visual feedback to the writer.
+
+## Future Improvements
+With more time, I would implement:
+*   **AI Transcription Models**: Integration of OCR/Vision models to transcribe content directly from uploaded images.
+*   **Enhanced Workspaces**: Separate, customizable workspace environments for different writer teams.
+*   **Advanced Formatting**: richer text editor capabilities within the parsing engine.
+
 ## Application Walkthrough
 
 ### 1. Login Page
