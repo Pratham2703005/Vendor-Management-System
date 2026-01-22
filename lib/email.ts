@@ -46,7 +46,6 @@ export async function sendApprovalRequest(submission: Submission) {
         }
 
         const emails = MANAGER_EMAILS.split(',').map(e => e.trim()).filter(Boolean);
-        console.log(`Preparing to send email to ${emails.length} recipients: ${emails.join(', ')}`);
 
         for (const email of emails) {
             await transporter.sendMail({
@@ -55,7 +54,6 @@ export async function sendApprovalRequest(submission: Submission) {
                 subject: `Action Required: ${submission.title}`,
                 html: htmlContent,
             });
-            console.log(`Email sent to: ${email}`);
         }
     } catch (error) {
         console.error('Failed to send email:', error);

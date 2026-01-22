@@ -18,6 +18,8 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
     }
 
-    // Redirect to a nice success page
-    return NextResponse.redirect(new URL(`/dashboard?message=Submission ${status}`, request.url));
+    // Redirect to a nice success page, and ensure they view it as a manager
+    const response = NextResponse.redirect(new URL(`/dashboard?message=Submission ${status}`, request.url));
+    response.cookies.set('user_role', 'manager', { path: '/' });
+    return response;
 }
