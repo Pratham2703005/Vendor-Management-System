@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { Submission } from './types';
 
-const MANAGER_EMAILS = process.env.MANAGER_EMAILS || 'prathemkumar35@gmail.com,prathemkumar36@gmail.com';
+const MANAGER_EMAILS = process.env.MANAGER_EMAILS;
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
 const SITE_URL = process.env.SITE_URL || 'http://localhost:3000';
@@ -45,9 +45,9 @@ export async function sendApprovalRequest(submission: Submission) {
             return;
         }
 
-        const emails = MANAGER_EMAILS.split(',').map(e => e.trim()).filter(Boolean);
+        const emails = MANAGER_EMAILS?.split(',').map(e => e.trim()).filter(Boolean);
 
-        for (const email of emails) {
+        for (const email of emails || []) {
             await transporter.sendMail({
                 from: `"Aura VMS" <${SMTP_USER}>`,
                 to: email,
