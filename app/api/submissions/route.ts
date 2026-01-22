@@ -16,8 +16,8 @@ export async function POST(request: Request) {
 
         const submission = createSubmission(finalTitle, finalContent, image_ref);
 
-        // Trigger email notification (non-blocking)
-        sendApprovalRequest(submission);
+        // Trigger email notification (awaited for Serverless/Vercel)
+        await sendApprovalRequest(submission);
 
         return NextResponse.json({ success: true, submission });
     } catch (error) {

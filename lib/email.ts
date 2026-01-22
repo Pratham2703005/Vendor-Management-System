@@ -4,12 +4,7 @@ import { Submission } from './types';
 const MANAGER_EMAILS = process.env.MANAGER_EMAILS;
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
-const SITE_URL = process.env.SITE_URL || 'http://localhost:3000';
-
-console.log("Email Config Loaded:", {
-    user: SMTP_USER,
-    pass: SMTP_PASS
-});
+const SITE_URL = process.env.SITE_URL;
 
 // Environment variables would be used here in a real app
 const transporter = nodemailer.createTransport({
@@ -45,9 +40,15 @@ export async function sendApprovalRequest(submission: Submission) {
             return;
         }
 
-        const emails = MANAGER_EMAILS?.split(',').map(e => e.trim()).filter(Boolean);
+        if (!MANAGER_EMAILS) {
+            console.warn('MANAGER_EMAILS environment variable is not set. No emails will be sent.');
+            return;
+        }
 
-        for (const email of emails || []) {
+        const emails = MANAGER_EMAILS.split(',').map(e => e.trim()).filter(Boolean);
+        console.log(`Preparing to send email to ${emails.length} recipients: ${emails.join(', ')}`);
+
+        for (const email of emails) {
             await transporter.sendMail({
                 from: `"Aura VMS" <${SMTP_USER}>`,
                 to: email,
