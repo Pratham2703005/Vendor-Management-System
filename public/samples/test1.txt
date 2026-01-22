@@ -1,4 +1,6 @@
-C++ in DSA refers to using the C++ programming language as a tool to implement, study, and apply Data Structures and Algorithms (DSA). C++ is a popular choice for learning and using DSA due to its performance, control over memory, and robust Standard Template Library (STL). 
+C++ in DSA refers to using the C++ programming language
+ a tool to implement, study, and apply Data Structures and Algorithms (DSA). 
+C++ is a popular choice for learning and using DSA due to its performance, control over memory, and robust Standard Template Library (STL). 
 Why Use C++ for DSA
 Speed and Performance C++ is a high-performance language that compiles to machine code and offers fast execution speeds, which is a critical factor in competitive programming and performance-intensive applications.
 Memory Management It provides features like pointers and manual memory allocationdeallocation, which help in deeply understanding how data structures work at a lower level.
