@@ -21,23 +21,29 @@ async function parseDocx(buffer: Buffer): Promise<ParsedDocument> {
     // Extract raw text
     const { value: rawText } = await mammoth.extractRawText({ buffer });
 
-    // Basic heuristic: First non-empty line is title
     const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
     if (lines.length === 0) {
-        // If text is empty, check images. If images exist, title='Untitled', content=''
         const { value: html } = await mammoth.convertToHtml({ buffer });
         const imgRef = extractFirstImageFromHtml(html);
         return { title: 'Untitled', content: '', image_ref: imgRef };
     }
 
-    const title = lines[0] || 'Untitled';
-    const content = lines.slice(1).join('\n\n') || '';
+    let title = 'Untitled';
+    let content = rawText;
+
+    const firstLineWords = lines[0].split(/\s+/).length;
+
+    if (firstLineWords <= 10) {
+        title = lines[0];
+        // Content is everything after the title line
+        const titleIndex = rawText.indexOf(lines[0]);
+        content = rawText.slice(titleIndex + lines[0].length).trim();
+    }
 
     // Attempt to find images (getting the first one if exists)
     const { value: html } = await mammoth.convertToHtml({ buffer });
-
-    const imageRef = extractFirstImageFromHtml(html); // Prioritize embedded check for docx
+    const imageRef = extractFirstImageFromHtml(html);
 
     return { title, content, image_ref: imageRef };
 }

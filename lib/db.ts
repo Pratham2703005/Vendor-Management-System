@@ -16,7 +16,9 @@ const db = new Database(dbPath);
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
+    username TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
     role TEXT
   );
 
@@ -30,12 +32,12 @@ db.exec(`
   );
 `);
 
-const insertUser = db.prepare('INSERT OR IGNORE INTO users (username, role) VALUES (?, ?)');
-insertUser.run('writer', 'writer');
-insertUser.run('manager', 'manager');
+const insertUser = db.prepare('INSERT OR IGNORE INTO users (username, email, password, role) VALUES (?, ?, ?, ?)');
+insertUser.run('Writer User', 'writer@test.com', 'writer123', 'writer');
+insertUser.run('Manager User', 'manager@test.com', 'manager123', 'manager');
 
-export function getUser(username: string): User | string {
-  return db.prepare('SELECT * FROM users WHERE username = ?').get(username) as User | "Write 'writer' and 'manager' in the username field";
+export function getUser(email: string): User | undefined {
+  return db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User | undefined;
 }
 
 export function createSubmission(title: string, content: string, image_ref?: string): Submission {

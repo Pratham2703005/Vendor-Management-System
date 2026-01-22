@@ -2,8 +2,15 @@ import { Submission } from "@/lib/types";
 import { Dispatch, SetStateAction, useState, useRef } from "react";
 import { StatusBadge } from "../badge/StatusBadge";
 import toast from "react-hot-toast";
+import { MarkdownRenderer } from "../MarkdownRenderer";
 
 export function WriterView({ submissions, setSubmissions }: { submissions: Submission[], setSubmissions: Dispatch<SetStateAction<Submission[]>> }) {
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const toggleExpand = (id: number) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
   const [parsedData, setParsedData] = useState<{ title: string; content: string; image_ref?: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -68,6 +75,10 @@ export function WriterView({ submissions, setSubmissions }: { submissions: Submi
         <button onClick={() => window.location.href='/'} className="text-sm text-gray-400 hover:text-white">Logout</button>
       </header>
 
+      <div className="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-sm text-indigo-200">
+        <strong>How to use:</strong> Upload a .docx, .txt, or .md file. Review the preview and click "Submit" to send it to a manager.
+      </div>
+
       <div className="glass-card p-8 rounded-2xl border-dashed border-2 border-indigo-500/30 hover:border-indigo-500/50 transition-colors text-center">
         <input 
           type="file" 
@@ -115,8 +126,8 @@ export function WriterView({ submissions, setSubmissions }: { submissions: Submi
               </div>
             )}
             <h1 className="text-2xl font-bold text-white border-b border-white/10 pb-4">{parsedData.title}</h1>
-            <div className="prose prose-invert max-w-none text-gray-300 whitespace-pre-wrap leading-relaxed">
-              {parsedData.content}
+            <div className="mb-4 text-gray-300">
+                <MarkdownRenderer content={parsedData.content} />
             </div>
           </div>
         </div>
@@ -127,9 +138,33 @@ export function WriterView({ submissions, setSubmissions }: { submissions: Submi
         <h3 className="text-lg font-medium text-gray-400 mb-4">Recent Submissions</h3>
         <div className="space-y-3">
           {submissions.map(sub => (
-            <div key={sub.id} className="glass p-4 rounded-xl flex justify-between items-center">
-              <span className="font-medium text-gray-200">{sub.title}</span>
-              <StatusBadge status={sub.status} />
+            <div key={sub.id} className="glass rounded-xl overflow-hidden transition-all duration-300">
+              <div 
+                className="p-4 cursor-pointer flex justify-between items-center hover:bg-white/5"
+                onClick={() => toggleExpand(sub.id)}
+              >
+                  <div className="flex-1 mr-4">
+                    <span className="font-medium text-gray-200">{sub.title}</span>
+                    <span className="text-gray-500 text-sm ml-2">- {new Date(sub.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <StatusBadge status={sub.status} />
+              </div>
+
+               {expandedId === sub.id && (
+                  <div className="px-4 pb-4 pt-0 animate-in slide-in-from-top-1 bg-black/20">
+                     <div className="h-px bg-white/5 mb-3"></div>
+                     
+                     <div className="mb-4 text-gray-300">
+                        <MarkdownRenderer content={sub.content} />
+                     </div>
+                     
+                     {sub.image_ref && (
+                      <div className="mt-3 text-xs text-pink-400/70 border border-pink-500/10 inline-block px-2 py-1 rounded">
+                        Reference: {sub.image_ref}
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
           ))}
           {submissions.length === 0 && <p className="text-gray-500 italic">No submissions yet.</p>}

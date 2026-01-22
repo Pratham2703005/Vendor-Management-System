@@ -24,10 +24,13 @@ export async function sendApprovalRequest(submission: Submission) {
     const approvalLink = `${SITE_URL}/api/respond?id=${submission.id}&action=approve`;
     const rejectionLink = `${SITE_URL}/api/respond?id=${submission.id}&action=reject`;
 
+    // Extract first 100 chars
+    const previewText = submission.content.slice(0, 100) + (submission.content.length > 100 ? '...' : '');
+
     const htmlContent = `
     <h2>New Submission for Approval</h2>
     <p><strong>Title:</strong> ${submission.title}</p>
-    <p><strong>Preview:</strong> ${submission.content.substring(0, 100)}...</p>
+    <p><strong>Preview:</strong> ${previewText}</p>
     <br/>
     <p>
       <a href="${approvalLink}" style="padding: 10px 20px; background: green; color: white; text-decoration: none;">Approve</a>
@@ -42,20 +45,17 @@ export async function sendApprovalRequest(submission: Submission) {
             return;
         }
 
-        await transporter.sendMail({
-            from: '"Aura VMS" <system@auravms.com>',
-            to: MANAGER_EMAILS?.split(',')[0].trim(),
-            subject: `Action Required: ${submission.title}`,
-            html: htmlContent,
-        });
-        console.log(`Email sent to: ${MANAGER_EMAILS?.split(',')[0].trim()}`);
-        await transporter.sendMail({
-            from: '"Aura VMS" <system@auravms.com>',
-            to: MANAGER_EMAILS?.split(',')[1].trim(),
-            subject: `Action Required: ${submission.title}`,
-            html: htmlContent,
-        });
-        console.log(`Email sent to: ${MANAGER_EMAILS?.split(',')[1].trim()}`);
+        const emails = MANAGER_EMAILS.split(',').map(e => e.trim()).filter(Boolean);
+
+        for (const email of emails) {
+            await transporter.sendMail({
+                from: `"Aura VMS" <${SMTP_USER}>`,
+                to: email,
+                subject: `Action Required: ${submission.title}`,
+                html: htmlContent,
+            });
+            console.log(`Email sent to: ${email}`);
+        }
     } catch (error) {
         console.error('Failed to send email:', error);
     }

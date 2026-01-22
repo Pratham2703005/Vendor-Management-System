@@ -10,9 +10,9 @@ Live Link: [aura-vms-assign.vercel.app](https://aura-vms-assign.vercel.app/)
 *   **Automated Workflow**: status tracking and email notifications for approvals.
 
 ## Credentials for Testing
-To test the application, use the following Access IDs at the login screen:
-*   **Writer**: `writer` (Can upload and view own submissions)
-*   **Manager**: `manager` (Can approve or reject submissions)
+To test the application, use the following credentials at the login screen:
+*   **Writer**: `writer@test.com` / `writer123`
+*   **Manager**: `manager@test.com` / `manager123`
 
 ## Key Focus Areas
 During development, I specifically focused on:
@@ -50,6 +50,14 @@ Managers receive automated email notifications containing the full submission de
 ### 6. Manager Dashboard
 *Feature currently in development.* Future updates will include a dedicated Manager Dashboard to view historical data, track approved/rejected requests, and manage remaining queue items.
 ![Manager Dashboard](./public/screenshots/6_manager_dash.png)
+
+### 7. Manager Decision
+*Feature currently in development.* Future updates will include a dedicated Manager Dashboard to view historical data, track approved/rejected requests, and manage remaining queue items.
+![Manager Decision](./public/screenshots/7_manager_review.png)
+
+### 8. Manager Decision
+*Feature currently in development.* Future updates will include a dedicated Manager Dashboard to view historical data, track approved/rejected requests, and manage remaining queue items.
+![Manager Decision](./public/screenshots/8_manager_decision.png)
 
 ## Tests
 
@@ -90,6 +98,18 @@ Follow these steps to set up the project locally:
     npm run dev
     ```
     The application will be accessible at `http://localhost:3000`.
+
+---
+
+## Assignment Reflection
+
+### What I Focused On
+*   **User Experience (UX):** Created a premium, dark-mode interface with smooth animations and intuitive workflows (e.g., expandable accordions for content review, rich markdown rendering).
+*   **Robust Parsing:** Implemented a resilient document parser that handles various edge cases (empty files, missing titles) and strictly follows the "First Line as Title" rule while stripping markdown artifacts.
+*   **Separation of Concerns:** Maintained a clean architecture with distinct modules for parsing (`lib/text-parser.ts`), database (`lib/db.ts`), email (`lib/email.ts`), and UI components.
+
+### One Thing I'd Improve
+*   **Authentication & Security:** Currently, the app uses a simple email/password check without true session management (JWT/NextAuth). For a production app, I would implement **NextAuth.js** (Auth.js) to handle secure sessions, password hashing, and role-based access control exclusively.
 
 ---
 Thanks for reading, hope you like it!

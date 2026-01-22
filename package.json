@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.19",
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.6.2",
     "mammoth": "^1.11.0",
@@ -17,7 +18,9 @@
     "nodemailer": "^7.0.12",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-hot-toast": "^2.6.0"
+    "react-hot-toast": "^2.6.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

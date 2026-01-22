@@ -1,8 +1,15 @@
 import { Submission } from "@/lib/types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { StatusBadge } from "../badge/StatusBadge";
+import { MarkdownRenderer } from "../MarkdownRenderer";
 
 export function ManagerView({ submissions, setSubmissions }: { submissions: Submission[], setSubmissions: Dispatch<SetStateAction<Submission[]>> }) {
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const toggleExpand = (id: number) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
   const handleAction = async (id: number, action: 'approve' | 'reject') => {
     try {
       const res = await fetch(`/api/respond?id=${id}&action=${action}`);
@@ -28,6 +35,11 @@ export function ManagerView({ submissions, setSubmissions }: { submissions: Subm
         </div>
         <button onClick={() => window.location.href='/'} className="text-sm text-gray-400 hover:text-white">Logout</button>
       </header>
+      <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-200 text-center">
+            <strong>UI Guide:</strong> Review submissions below. Use the "Approve" (Green) or "Reject" (Red) buttons to make a decision.
+            <br />
+            Content is limited to the first 1000 words for efficiency. Email notifications contain a 10-word summary.
+          </div>
 
       <div className="grid gap-6">
         {/* Pending List */}
@@ -39,32 +51,74 @@ export function ManagerView({ submissions, setSubmissions }: { submissions: Subm
 
           <div className="grid gap-4">
             {pending.map(sub => (
-              <div key={sub.id} className="glass-card p-6 rounded-xl border-l-4 border-indigo-500">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">{sub.title}</h4>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">{sub.content}</p>
-                    {sub.image_ref && (
-                      <div className="text-xs text-pink-400 mb-4 bg-pink-500/10 inline-block px-2 py-1 rounded">
-                        Has Image: {sub.image_ref.slice(0, 30)}...
-                      </div>
-                    )}
+              <div key={sub.id} className="glass-card rounded-xl border-l-4 border-indigo-500 overflow-hidden transition-all duration-300">
+                {/* Header / Summary */}
+                <div 
+                  className="p-6 cursor-pointer flex justify-between items-center hover:bg-white/5"
+                  onClick={() => toggleExpand(sub.id)}
+                >
+                  <div className="flex-1 mr-4">
+                    <h4 className="text-xl font-bold text-white mb-1 flex items-center gap-3">
+                      {sub.title}
+                      <span className={`text-xs px-2 py-0.5 rounded-full bg-surface border border-white/10 text-gray-400 transition-transform duration-300 ${expandedId === sub.id ? 'rotate-180' : ''}`}>
+                         ▼
+                      </span>
+                    </h4>
+                    {!expandedId || expandedId !== sub.id ? (
+                       <p className="text-gray-400 text-sm line-clamp-1">
+                         {sub.content.slice(0, 100)}...
+                       </p>
+                    ) : null}
                   </div>
-                  <div className="flex gap-2 ml-4">
-                    <button 
-                      onClick={() => handleAction(sub.id, 'approve')}
-                      className="px-4 py-2 bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white rounded-lg transition-colors border border-green-500/20"
-                    >
-                      Approve
-                    </button>
-                    <button 
-                      onClick={() => handleAction(sub.id, 'reject')}
-                      className="px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors border border-red-500/20"
-                    >
-                      Reject
-                    </button>
+                  
+                  {/* Action Buttons in Header */}
+                  <div className="flex gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleAction(sub.id, 'approve'); }}
+                        className="px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white rounded text-sm transition-colors border border-green-500/20"
+                      >
+                        Approve
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleAction(sub.id, 'reject'); }}
+                        className="px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded text-sm transition-colors border border-red-500/20"
+                      >
+                        Reject
+                      </button>
                   </div>
                 </div>
+
+                {/* Expanded Content */}
+                {expandedId === sub.id && (
+                  <div className="px-6 pb-6 pt-0 animate-in slide-in-from-top-2">
+                    <div className="h-px bg-white/10 mb-4"></div>
+                    
+                    <div className="mb-4 text-gray-300">
+                      <MarkdownRenderer content={sub.content} />
+                    </div>
+                    
+                    {sub.image_ref && (
+                      <div className="text-xs text-pink-400 mb-6 bg-pink-500/10 inline-block px-3 py-2 rounded border border-pink-500/20">
+                        <strong>Image Reference:</strong> {sub.image_ref}
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 justify-end pt-4 border-t border-white/5">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleAction(sub.id, 'approve'); }}
+                          className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-medium shadow-lg shadow-green-900/20"
+                        >
+                          Approve
+                        </button>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleAction(sub.id, 'reject'); }}
+                          className="px-6 py-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors border border-red-500/20 font-medium"
+                        >
+                          Reject
+                        </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             {pending.length === 0 && (
@@ -78,11 +132,35 @@ export function ManagerView({ submissions, setSubmissions }: { submissions: Subm
         {/* Action History */}
         <section className="mt-8 pt-8 border-t border-white/5">
           <h3 className="text-lg font-medium text-gray-400 mb-4">Past Actions</h3>
-          <div className="bg-surface/30 rounded-xl overflow-hidden">
+          <div className="grid gap-3">
             {history.map(sub => (
-              <div key={sub.id} className="p-4 border-b border-white/5 flex justify-between items-center hover:bg-white/5 transition-colors">
-                <span className="text-gray-300">{sub.title}</span>
-                <StatusBadge status={sub.status} />
+              <div key={sub.id} className="glass rounded-xl overflow-hidden transition-all duration-300">
+                 <div 
+                  className="p-4 cursor-pointer flex justify-between items-center hover:bg-white/5"
+                  onClick={() => toggleExpand(sub.id)}
+                >
+                  <div className="flex-1 mr-4">
+                    <span className="text-gray-200 font-medium">{sub.title}</span>
+                    <span className="text-gray-500 text-sm ml-2">- {new Date(sub.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <StatusBadge status={sub.status} />
+                </div>
+
+                {expandedId === sub.id && (
+                  <div className="px-4 pb-4 pt-0 animate-in slide-in-from-top-1 bg-black/20">
+                     <div className="h-px bg-white/5 mb-3"></div>
+                     
+                     <div className="mb-4 text-gray-300">
+                        <MarkdownRenderer content={sub.content} />
+                     </div>
+
+                     {sub.image_ref && (
+                      <div className="mt-3 text-xs text-pink-400/70 border border-pink-500/10 inline-block px-2 py-1 rounded">
+                        Reference: {sub.image_ref}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
             {history.length === 0 && <div className="p-4 text-gray-500 text-sm">No history yet.</div>}

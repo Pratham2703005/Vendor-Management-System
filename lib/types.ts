@@ -10,5 +10,6 @@ export interface Submission {
 export interface User {
     id: number;
     username: string;
+    email: string;
     role: 'writer' | 'manager';
 }
